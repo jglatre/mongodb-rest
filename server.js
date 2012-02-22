@@ -26,8 +26,10 @@ var config = { "db": {
 var app = module.exports.app = express.createServer();
 
 try {
-  config = JSON.parse(fs.readFileSync(process.cwd()+"/config.json"));
-} catch(e) {
+  config = JSON.parse( fs.readFileSync( process.cwd() + "/config.json" ) );
+} 
+catch(e) {
+  console.log("Unable to load config.json due to " + e + ". Using defaults");	
   // ignore
 }
 
@@ -45,6 +47,11 @@ app.configure(function(){
 		app.use(accesscontrol.handle);
 	}	
 });
+
+if (config.filters) {
+	module.exports.filters = require( config.filters );
+	console.log("Using filters: " + config.filters);
+}
 
 require('./lib/main');
 require('./lib/command');
